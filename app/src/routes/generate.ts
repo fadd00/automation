@@ -16,9 +16,12 @@ export const generateRoute = new Elysia()
   // POST single generate
   .post(
     "/generate",
-    async ({ body, error, set }) => {
+    async ({ body, set }) => {
       const program = PROGRAMS[body.program_id]
-      if (!program) return error(400, { message: "Program tidak ditemukan" })
+      if (!program) {
+        set.status = 400
+        return { message: "Program tidak ditemukan" }
+      }
 
       try {
         const naskah = await generateNaskah(body.tema, program, body.news_context)
@@ -30,7 +33,8 @@ export const generateRoute = new Elysia()
 
         return buffer
       } catch (e: any) {
-        return error(500, { message: e.message })
+        set.status = 500
+        return { message: e.message }
       }
     },
     {

@@ -24,10 +24,16 @@ async function chunkProcess<T, R>(
 
 export const batchRoute = new Elysia().post(
   "/batch",
-  async ({ body, error, set }) => {
+  async ({ body, set }) => {
     const program = PROGRAMS[body.program_id]
-    if (!program) return error(400, { message: "Program tidak ditemukan" })
-    if (body.items.length > 60) return error(400, { message: "Maksimal 60 naskah" })
+    if (!program) {
+      set.status = 400
+      return { message: "Program tidak ditemukan" }
+    }
+    if (body.items.length > 60) {
+      set.status = 400
+      return { message: "Maksimal 60 naskah" }
+    }
 
     const results = await chunkProcess(body.items, CHUNK_SIZE, async (item) => {
       const naskah = await generateNaskah(item.tema, program, item.news_context)
@@ -46,7 +52,10 @@ export const batchRoute = new Elysia().post(
       .map((r, i) => r.status === "rejected" ? body.items[i].tema : null)
       .filter(Boolean)
 
-    if (success.length === 0) return error(500, { message: "Semua naskah gagal di-generate" })
+    if (success.length === 0) {
+      set.status = 500
+      return { message: "Semua naskah gagal di-generate" }
+    }
 
     const zipBuffer = await zipBuffers(success)
 
