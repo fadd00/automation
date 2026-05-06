@@ -6,9 +6,16 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
-    "elysia": "latest"
+    "@elysiajs/cors": "^1.4.2",
+    "archiver": "^7.0.1",
+    "cheerio": "^1.2.0",
+    "docx": "^9.6.1",
+    "elysia": "^1.4.28",
+    "ofetch": "^1.5.1",
+    "openai": "^6.36.0"
   },
   "devDependencies": {
+    "@types/archiver": "^7.0.0",
     "bun-types": "latest"
   },
   "module": "src/index.js"
