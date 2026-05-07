@@ -33,11 +33,79 @@ function App() {
   const [articleLink, setArticleLink] = useState('')
   const [programType, setProgramType] = useState('')
   const [scriptTitle, setScriptTitle] = useState('')
+  const [isGenerating, setIsGenerating] = useState(false)
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    console.log({ articleLink, programType, scriptTitle })
-    alert('Generate & Download clicked!')
+    if (!programType) return alert('Pilih program radio terlebih dahulu!')
+    if (!scriptTitle) return alert('Masukkan judul naskah!')
+
+    setIsGenerating(true)
+    try {
+      let newsContext = undefined
+
+      // 1. Scrape artikel jika link disediakan
+      if (articleLink) {
+        const scrapeRes = await fetch('/scrape', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: articleLink })
+        })
+        
+        if (!scrapeRes.ok) {
+          const err = await scrapeRes.json().catch(() => ({}))
+          throw new Error(err.message || 'Gagal melakukan scrape artikel')
+        }
+        
+        const scrapeData = await scrapeRes.json()
+        newsContext = scrapeData.ringkasan
+      }
+
+      // 2. Generate naskah
+      const generateRes = await fetch('/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tema: scriptTitle,
+          program_id: programType,
+          news_context: newsContext
+        })
+      })
+
+      if (!generateRes.ok) {
+        const err = await generateRes.json().catch(() => ({}))
+        throw new Error(err.message || 'Gagal membuat naskah')
+      }
+
+      // 3. Download file DOCX
+      const blob = await generateRes.blob()
+      const downloadUrl = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.style.display = 'none'
+      a.href = downloadUrl
+      
+      // Ambil nama file dari header Content-Disposition jika ada (opsional)
+      const headerDisposition = generateRes.headers.get('Content-Disposition')
+      let filename = `Naskah_${scriptTitle.replace(/\s+/g, '_')}.docx`
+      if (headerDisposition && headerDisposition.includes('filename=')) {
+        const match = headerDisposition.match(/filename="?([^"]+)"?/)
+        if (match && match[1]) filename = match[1]
+      }
+      
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      
+      // Cleanup
+      window.URL.revokeObjectURL(downloadUrl)
+      a.remove()
+      alert('Berhasil membuat dan mengunduh naskah!')
+
+    } catch (error: any) {
+      alert(`Terjadi kesalahan: ${error.message}`)
+    } finally {
+      setIsGenerating(false)
+    }
   }
 
   const heroIcons = [
@@ -183,9 +251,9 @@ function App() {
                 </div>
 
                 <div className="form-actions">
-                  <button className="generate-button" type="submit">
+                  <button className="generate-button" type="submit" disabled={isGenerating}>
                     <span className="material-symbols-outlined">magic_button</span>
-                    Generate & Download
+                    {isGenerating ? 'Memproses Naskah...' : 'Generate & Download'}
                   </button>
                 </div>
               </form>
