@@ -29,3 +29,6 @@
 - [x] **Melakukan Testing dan Perbaikan Endpoint `/scrape` pada Portal Berita**
   - **Konteks:** Mengetes web scraping pada artikel Kompas, CNN Indonesia, dan Detik untuk memastikan parameter judul dan ringkasan diambil dengan benar.
   - **Tindakan:** Memperbaiki sistem pencocokan domain menjadi `.includes()` agar dapat menjangkau subdomain seperti `money.kompas.com`. Serta memperbaiki selector CSS untuk CNN Indonesia dari `h1.title` menjadi `h1`. Ketiga portal berita sukses tereksplorasi.
+- [x] **Pembaruan Dokumentasi README.md (Integrasi Fullstack)**
+  - **Konteks:** Diperlukan instruksi yang jelas bagi pengguna tentang cara menjalankan frontend dan backend secara berdampingan.
+  - **Tindakan:** Menambahkan bagian instruksi "Cara Menjalankan Frontend dan Backend Bersamaan" di README.md, meliputi perintah startup kedua sisi (`bun run dev`) di port yang berbeda, serta petunjuk terkait manajemen akses CORS.
