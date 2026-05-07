@@ -25,6 +25,7 @@ export async function generateNaskah(
   const response = await client.chat.completions.create({
     model     : "deepseek-chat",
     max_tokens: 8000,
+    response_format: { type: "json_object" },
     messages  : [
       { role: "system", content: program.system_prompt },
       { role: "user",   content: userMsg },

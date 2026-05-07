@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio"
+import { ofetch } from "ofetch"
 
 // selector per domain — tambah sesuai kebutuhan
 const DOMAIN_SELECTORS: Record<string, { title: string; content: string }> = {
@@ -21,15 +22,21 @@ function getDomain(url: string): string {
 }
 
 export async function scrapeArticle(url: string) {
-  const res = await fetch(url, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; JBR-Bot/1.0)",
-    },
-  })
+  let html = ""
+  try {
+    html = await ofetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; JBR-Bot/1.0)",
+      },
+      retry: 3,
+      retryDelay: 1000,
+      timeout: 10000,
+      responseType: "text",
+    })
+  } catch (error: any) {
+    throw new Error(`Gagal fetch URL: ${error.message}`)
+  }
 
-  if (!res.ok) throw new Error(`Gagal fetch URL: ${res.status}`)
-
-  const html     = await res.text()
   const $        = cheerio.load(html)
   const domain   = getDomain(url)
 
@@ -46,7 +53,8 @@ export async function scrapeArticle(url: string) {
   const paragraphs: string[] = []
   $(selector.content).each((_, el) => {
     const text = $(el).text().trim()
-    if (text.length > 40) paragraphs.push(text) // filter paragraf terlalu pendek
+    const isGarbage = /baca juga|simak video|klik di sini/i.test(text)
+    if (text.length > 40 && !isGarbage) paragraphs.push(text) // filter paragraf terlalu pendek & sampah
   })
 
   if (!judul && paragraphs.length === 0) {

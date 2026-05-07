@@ -1,6 +1,6 @@
 import {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
-  AlignmentType, WidthType, BorderStyle,
+  AlignmentType, WidthType, BorderStyle, TabStopType, TabStopPosition
 } from "docx"
 import type { NaskahJSON, ProgramConfig } from "../types"
 
@@ -27,7 +27,13 @@ function makeTabPara(label: string, value: string, font: string, singleTab = fal
   return new Paragraph({
     children: [
       makeRun(label, font),
-      new TextRun({ text: (singleTab ? "\t" : "\t\t") + `: ${value}`, font, size: 28 }),
+      new TextRun({ text: "\t" + `: ${value}`, font, size: 28 }),
+    ],
+    tabStops: [
+      {
+        type: TabStopType.LEFT,
+        position: 2835, // Absolute tab stop for alignment (approx 5cm)
+      },
     ],
     spacing: { after: 60 },
   })
