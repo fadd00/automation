@@ -1,9 +1,16 @@
 import OpenAI from "openai"
 import type { NaskahJSON, ProgramConfig } from "../types"
 
+const apiKey = process.env.OPENAI_API_KEY ?? process.env.DEEPSEEK_API_KEY
+if (!apiKey) {
+  throw new Error(
+    "Missing OpenAI API key. Set OPENAI_API_KEY or DEEPSEEK_API_KEY in your environment."
+  )
+}
+
 const client = new OpenAI({
-  apiKey  : process.env.DEEPSEEK_API_KEY!,
-  baseURL : "https://api.deepseek.com",
+  apiKey,
+  baseURL: "https://api.deepseek.com",
 })
 
 export async function generateNaskah(
