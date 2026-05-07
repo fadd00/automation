@@ -166,20 +166,6 @@ function App() {
             <div className="topbar-left">
               <h1>{currentView === 'generator' ? 'Generate Naskah Radio' : 'Program Library'}</h1>
             </div>
-            <nav className="topbar-nav">
-              <button
-                className={`topbar-link ${currentView === 'generator' ? 'active' : ''}`}
-                onClick={() => setCurrentView('generator')}
-              >
-                Generator
-              </button>
-              <button
-                className={`topbar-link ${currentView === 'library' ? 'active' : ''}`}
-                onClick={() => setCurrentView('library')}
-              >
-                Library
-              </button>
-            </nav>
           </div>
         </header>
 
@@ -196,7 +182,7 @@ function App() {
             <section className="form-card">
               <div className="form-header">
                 <h2>Buat Naskah Radio</h2>
-                <p>Konversi artikel berita menjadi naskah siaran profesional dalam hitungan detik.</p>
+                <p>Konversi artikel berita menjadi naskah siaran profesional.</p>
               </div>
 
               <form className="form-grid" onSubmit={handleSubmit}>

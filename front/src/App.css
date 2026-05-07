@@ -1,18 +1,20 @@
 :root {
   color-scheme: light;
   font-family: 'Inter', system-ui, sans-serif;
-  background: #fef9ea;
   color: #1d1c13;
-  --surface: #fef9ea;
-  --surface-alt: #ffffff;
-  --surface-border: #ccc7af;
-  --surface-strong: #e7e2d4;
+  
+  /* Palet Warna Asli (Tidak Diubah) */
   --primary: #686000;
   --primary-strong: #a29502;
   --secondary: #665f2c;
-  --text-muted: #4a4735;
-  --text-soft: rgba(29, 28, 19, 0.75);
-  --shadow: 0 16px 50px rgba(0, 0, 0, 0.08);
+  
+  /* Variable untuk efek Futuristik (Glassmorphism & Glow) */
+  --glass-red: rgba(185, 28, 28, 0.85);
+  --glass-green: rgba(0, 104, 55, 0.85);
+  --glass-orange: rgba(255, 167, 5, 0.80);
+  --glass-white: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glow-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 }
 
 * {
@@ -22,8 +24,8 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--surface);
   color: #1d1c13;
+  background-color: #000; /* Fallback base */
 }
 
 button,
@@ -34,21 +36,57 @@ select {
 
 button {
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .app-shell {
   display: flex;
   min-height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
 
+/* =========================================
+   BACKGROUND FUTURISTIK
+========================================= */
+.workspace-area {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.workspace-area::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: #000000; 
+  background-image: url("./assets/bg-tekkomdik.jpg"); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.6; /* Disesuaikan sedikit agar glassmorphism lebih 'pop' */
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* =========================================
+   SIDEBAR (Glass Red)
+========================================= */
 .sidebar {
   display: none;
   flex-direction: column;
   width: 280px;
-  background: #b91c1c;
+  background: var(--glass-red);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-right: 1px solid var(--glass-border);
+  box-shadow: 4px 0 24px rgba(185, 28, 28, 0.4);
   color: white;
   padding: 24px;
   gap: 24px;
+  z-index: 10;
 }
 
 .brand-header {
@@ -61,6 +99,7 @@ button {
   width: 100%;
   max-width: 180px;
   border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .brand-tagline {
@@ -86,17 +125,19 @@ button {
   border-radius: 14px;
   color: white;
   text-decoration: none;
-  transition: background 0.2s;
-  opacity: 0.9;
-  border: none;
+  transition: all 0.3s ease;
+  opacity: 0.8;
+  border: 1px solid transparent;
   background: none;
-  cursor: pointer;
 }
 
 .nav-link:hover,
 .nav-link.active {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
   opacity: 1;
+  transform: translateX(4px); /* Efek slide ringan saat hover */
 }
 
 .sidebar-footer {
@@ -106,7 +147,7 @@ button {
 .primary-cta {
   width: 100%;
   border: none;
-  background: white;
+  background: rgba(255, 255, 255, 0.95);
   color: #b91c1c;
   padding: 14px 16px;
   border-radius: 16px;
@@ -115,21 +156,27 @@ button {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-.workspace-area {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
+.primary-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+  background: #ffffff;
 }
 
+/* =========================================
+   TOPBAR (Glass Green)
+========================================= */
 .topbar {
   position: sticky;
   top: 0;
   z-index: 5;
-  background: #006837;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--glass-green);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 24px rgba(0, 104, 55, 0.4);
 }
 
 .topbar-inner {
@@ -142,69 +189,17 @@ button {
   margin: 0 auto;
 }
 
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.menu-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border: none;
-  background: transparent;
-  color: white;
-}
-
 .topbar h1 {
   margin: 0;
   font-size: 24px;
   font-weight: 700;
   color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.topbar-nav {
-  display: none;
-  gap: 12px;
-}
-
-.topbar-nav button {
-  background: none;
-  border: none;
-  padding: 0;
-  color: rgba(255, 255, 255, 0.92);
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.topbar-link {
-  color: rgba(255, 255, 255, 0.92);
-  text-decoration: none;
-  font-weight: 700;
-  padding-bottom: 4px;
-  border-bottom: 2px solid transparent;
-  transition: border-color 0.2s;
-  font-size: 14px;
-  cursor: pointer;
-  background: none;
-  border: none;
-}
-
-.topbar-link:hover {
-  opacity: 0.8;
-}
-
-.topbar-link.active {
-  border-color: white;
-}
-
-.topbar-link.active {
-  border-color: white;
-}
-
+/* =========================================
+   MAIN CONTENT AREA
+========================================= */
 .content-area {
   flex: 1;
   display: flex;
@@ -214,6 +209,13 @@ button {
   position: relative;
 }
 
+/* Floating Animation untuk Hero Decor (Ikon-ikon di belakang) */
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
 .hero-decor {
   position: absolute;
   inset: 0;
@@ -221,24 +223,36 @@ button {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 14px;
+  gap: 20px;
   padding: 24px;
   pointer-events: none;
-  opacity: 0.08;
-  color: #006837;
+  opacity: 0.15;
+  color: #fff;
 }
 
 .hero-icon {
-  font-size: 24px;
+  font-size: 32px;
+  animation: float 8s ease-in-out infinite;
 }
 
+.hero-icon:nth-child(even) {
+  animation-delay: -4s;
+  animation-duration: 10s;
+}
+
+/* =========================================
+   FORM CARD (Glass Orange Glowing)
+========================================= */
 .form-card {
   position: relative;
   width: min(100%, 720px);
-  background: #ffa705;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--glass-orange);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 28px;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 24px 60px rgba(255, 167, 5, 0.4), 
+              inset 0 0 20px rgba(255, 255, 255, 0.2);
   padding: 40px;
   z-index: 1;
 }
@@ -248,11 +262,13 @@ button {
   font-size: clamp(28px, 4vw, 42px);
   line-height: 1.05;
   color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .form-header p {
   margin: 0;
-  color: rgba(255, 255, 255, 0.92);
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.05rem;
 }
 
 .form-grid {
@@ -269,6 +285,7 @@ button {
 .field-group label {
   color: white;
   font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .field-input-wrapper {
@@ -277,19 +294,21 @@ button {
   align-items: center;
 }
 
+/* Futuristik Inputs */
 .field-input-wrapper input,
 .field-input-wrapper select {
   width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 16px;
   padding: 14px 16px 14px 44px;
-  background: white;
   color: #1d1c13;
   font-size: 16px;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
   position: relative;
   z-index: 2;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .field-input-wrapper select {
@@ -300,90 +319,120 @@ button {
 
 .field-input-wrapper input:focus,
 .field-input-wrapper select:focus {
-  border-color: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+  background: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.4),
+              0 10px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .field-input-wrapper .material-symbols-outlined {
   position: absolute;
   left: 14px;
-  color: #7b7763;
+  color: var(--primary);
   font-size: 20px;
-  z-index: 1;
+  z-index: 3;
   pointer-events: none;
 }
 
 .arrow-icon {
   right: 14px;
   left: auto;
-  z-index: 1;
+  z-index: 3;
 }
 
 .form-actions {
-  padding-top: 18px;
+  padding-top: 24px;
   margin-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
   display: flex;
   justify-content: flex-end;
 }
 
+/* Submit Button Glow */
 .generate-button {
-  border: none;
-  background: #686000;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
   color: white;
-  padding: 15px 24px;
+  padding: 15px 28px;
   border-radius: 18px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   font-weight: 700;
-  box-shadow: 0 14px 36px rgba(104, 96, 0, 0.25);
+  box-shadow: 0 10px 30px rgba(104, 96, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.generate-button::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
 .generate-button:hover {
-  background: #554f00;
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(104, 96, 0, 0.7);
 }
 
+.generate-button:hover::after {
+  opacity: 1;
+}
+
+/* =========================================
+   PROGRAM LIBRARY (Glass Cards)
+========================================= */
 .program-library {
   position: relative;
   width: min(100%, 1200px);
   z-index: 1;
 }
 
+/* Header dibikin putih dan pake shadow agar terbaca di atas background gambar */
 .library-header h2 {
   margin: 0 0 10px;
   font-size: clamp(28px, 4vw, 42px);
   line-height: 1.05;
-  color: #1d1c13;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .library-header p {
   margin: 0;
-  color: #4a4735;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 16px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .program-grid {
   margin-top: 32px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  gap: 24px;
 }
 
 .program-card {
-  background: white;
-  border: 1px solid #e7e2d4;
+  background: var(--glass-white);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
   border-radius: 20px;
   padding: 24px;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: flex;
   flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .program-card:hover {
-  border-color: #686000;
-  box-shadow: 0 12px 40px rgba(104, 96, 0, 0.15);
-  transform: translateY(-4px);
+  border-color: #ffa705;
+  box-shadow: 0 15px 45px rgba(255, 167, 5, 0.3);
+  transform: translateY(-8px) scale(1.02);
 }
 
 .program-icon {
@@ -395,6 +444,7 @@ button {
   background: linear-gradient(135deg, #ffa705, #ff8c00);
   border-radius: 16px;
   margin-bottom: 16px;
+  box-shadow: 0 8px 20px rgba(255, 167, 5, 0.4);
 }
 
 .program-icon .material-symbols-outlined {
@@ -412,46 +462,47 @@ button {
 .program-subtitle {
   margin: 0 0 12px;
   font-size: 13px;
-  color: #665f2c;
-  font-weight: 600;
+  color: var(--primary-strong);
+  font-weight: 700;
+  letter-spacing: 0.05em;
 }
 
 .program-description {
-  margin: 0 0 16px;
+  margin: 0 0 20px;
   font-size: 14px;
   color: #4a4735;
-  line-height: 1.5;
+  line-height: 1.6;
   flex: 1;
 }
 
 .program-select-btn {
   border: none;
-  background: #686000;
+  background: var(--primary);
   color: white;
   padding: 12px 16px;
-  border-radius: 12px;
+  border-radius: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(104, 96, 0, 0.3);
 }
 
 .program-select-btn:hover {
-  background: #554f00;
+  background: var(--primary-strong);
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(104, 96, 0, 0.4);
 }
 
 .program-select-btn:active {
   transform: translateY(0);
 }
 
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
 @media (min-width: 768px) {
   .sidebar {
     display: flex;
-  }
-
-  .topbar-nav {
-    display: flex;
-    gap: 24px;
   }
 }
 
@@ -459,15 +510,12 @@ button {
   .app-shell {
     flex-direction: column;
   }
-
   .content-area {
     padding: 24px 16px 32px;
   }
-
   .form-card {
     padding: 32px;
   }
-
   .program-grid {
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
@@ -478,12 +526,10 @@ button {
     flex-direction: column;
     align-items: flex-start;
   }
-
   .field-input-wrapper input,
   .field-input-wrapper select {
     padding-left: 42px;
   }
-
   .program-grid {
     grid-template-columns: 1fr;
   }
