@@ -40,21 +40,145 @@ Output HARUS berupa JSON valid tanpa markdown/backtick:
 }
 `
 
+const buildPrompt = (name: string, callAudience: string, tagline: string) => {
+  return `Kamu adalah penulis naskah siaran radio profesional untuk Jogja Belajar Radio / Balai Tekkomdik DIY. Program: ${name} / Call Audience: ${callAudience} / Tagline: ${tagline}. ${BASE_RULES}`;
+};
+
 export const PROGRAMS: Record<string, ProgramConfig> = {
-  "sunset-mood": {
-    label         : "Sunset Mood",
-    jam_tayang    : "17.00 - 18.00 WIB",
-    call_audience : "Sobat Belajar",
-    tagline       : "Generasi Cerdas Masa Depan",
-    font          : "Calibri",
-    system_prompt : `Kamu adalah penulis naskah siaran radio profesional untuk Jogja Belajar Radio / Balai Tekkomdik DIY.
-Program: Sunset Mood / jam tayang 17.00-18.00 WIB / Call Audience: Sobat Belajar / Tagline: Generasi Cerdas Masa Depan.
-${BASE_RULES}`,
+  "gudeg_jogja": {
+    label: "GUDEG JOGJA",
+    jam_tayang: "Pagi",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("GUDEG JOGJA (Good Morning Mari Mandeg Mampir JBR Aja)", "Sobat Belajar", "Generasi Cerdas Masa Depan")
   },
-  // tambah program baru di sini, gak perlu ubah logic lain
-  // "pagi-ceria": {
-  //   label         : "Pagi Ceria",
-  //   jam_tayang    : "07.00 - 08.00 WIB",
-  //   ...
-  // }
-}
+  "lanosta_zone": {
+    label: "LANOSTA ZONE",
+    jam_tayang: "TBD",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("LANOSTA ZONE (Lagu Nostalgia)", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "brunch_ala_jbr": {
+    label: "BRUNCH ALA JBR",
+    jam_tayang: "Siang",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("BRUNCH ALA JBR", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "balai_tekkomdik": {
+    label: "BALAI TEKKOMDIK NEWS",
+    jam_tayang: "TBD",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("BALAI TEKKOMDIK NEWS", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "inspirative": {
+    label: "INSPIRATIVE PROGRAM",
+    jam_tayang: "TBD",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("INSPIRATIVE PROGRAM", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "lintas_info": {
+    label: "LINTAS INFORMASI TERKINI",
+    jam_tayang: "TBD",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("LINTAS INFORMASI TERKINI", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "ngudarkawruh": {
+    label: "NGUDARKAWRUH KEBUDAYAAN",
+    jam_tayang: "TBD",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("NGUDARKAWRUH KEBUDAYAAN", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "godain": {
+    label: "GODAIN",
+    jam_tayang: "TBD",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("GODAIN (Goyang Dangdut Paling In)", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "serangkai": {
+    label: "SERANGKAI",
+    jam_tayang: "TBD",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("SERANGKAI (Sharing dan Belajar Bareng Skai)", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "tau_gak_sih": {
+    label: "TAU GAK SIH?",
+    jam_tayang: "TBD",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("TAU GAK SIH?", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "sunset_mood": {
+    label: "SUNSET MOOD",
+    jam_tayang: "17.00 - 18.00 WIB",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("SUNSET MOOD", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "persada_zone": {
+    label: "PERSADA ZONE",
+    jam_tayang: "TBD",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("PERSADA ZONE", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "sinau_bareng": {
+    label: "SINAU BARENG JBR",
+    jam_tayang: "TBD",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("SINAU BARENG JBR", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "satnite_fever": {
+    label: "SATNITE FEVER",
+    jam_tayang: "Malam",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("SATNITE FEVER", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "sunday_geek": {
+    label: "SUNDAY GEEK",
+    jam_tayang: "TBD",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("SUNDAY GEEK", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "intm": {
+    label: "INTM",
+    jam_tayang: "TBD",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("INTM", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+  "insom_club": {
+    label: "INSOM CLUB",
+    jam_tayang: "Malam",
+    call_audience: "Sobat Belajar",
+    tagline: "Generasi Cerdas Masa Depan",
+    font: "Calibri",
+    system_prompt: buildPrompt("INSOM CLUB", "Sobat Belajar", "Generasi Cerdas Masa Depan")
+  },
+};

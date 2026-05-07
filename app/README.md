@@ -142,7 +142,7 @@ Ambil daftar semua program radio yang tersedia. Digunakan frontend untuk mengisi
 ```json
 [
   {
-    "id": "sunset-mood",
+    "id": "sunset_mood",
     "label": "Sunset Mood",
     "jam_tayang": "17.00 - 18.00 WIB"
   }
@@ -196,7 +196,7 @@ Generate satu naskah radio dan langsung return file `.docx`.
 ```json
 {
   "tema": "Etika Chat ke Guru atau Dosen Biar Gak Kena Semprot",
-  "program_id": "sunset-mood",
+  "program_id": "sunset_mood",
   "news_context": "(opsional) ringkasan berita dari endpoint /scrape"
 }
 ```
@@ -224,7 +224,7 @@ Generate banyak naskah sekaligus dan return satu file `.zip` berisi semua `.docx
 **Request Body:**
 ```json
 {
-  "program_id": "sunset-mood",
+  "program_id": "sunset_mood",
   "items": [
     {
       "tema": "Tips Belajar Efektif di Era Digital"
@@ -265,7 +265,7 @@ Cukup edit satu file: `src/templates/programs.ts`
 
 ```ts
 export const PROGRAMS: Record<string, ProgramConfig> = {
-  "sunset-mood": {
+  "sunset_mood": {
     // ... existing
   },
 
