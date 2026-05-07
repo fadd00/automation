@@ -75,6 +75,33 @@ Server akan berjalan di `http://localhost:3000`
 
 ---
 
+## Cara Menjalankan Frontend dan Backend Bersamaan
+
+Agar sistem dapat berjalan utuh dan dapat digunakan melalui UI, Anda harus memastikan *backend* maupun *frontend* dijalankan secara bersamaan pada waktu yang sama (karena berjalan di port terpisah).
+
+### 1. Jalankan Backend (API & Servis AI)
+Buka terminal dan arahkan ke direktori backend (`/app` atau `/backend`).
+```bash
+cd app
+bun run dev
+```
+> Server backend akan berjalan di `http://localhost:3000`
+
+### 2. Jalankan Frontend (UI)
+Biarkan terminal backend tetap berjalan. Buka jendela atau tab terminal baru, arahkan ke direktori *frontend* (misal `/front`), lalu jalankan:
+```bash
+cd front
+bun install   # Hanya jika belum pernah install
+bun run dev   # (atau npm run dev)
+```
+> Server frontend umumnya akan berjalan di `http://localhost:5173`. 
+> *Jika port di terminal frontend Anda berbeda, pastikan Anda meng-update nilai origin CORS di file backend `src/index.ts` agar disesuaikan dengan port tersebut.*
+
+### 3. Selesai
+Buka browser dan akses **`http://localhost:5173`**. Tombol Generate Naskah dan Scrape Berita siap digunakan dan akan diteruskan ke backend `localhost:3000`.
+
+---
+
 ## Environment Variables
 
 Buat file `.env` di root folder backend:

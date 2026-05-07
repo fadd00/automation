@@ -19,3 +19,13 @@
 - [x] **Membaca Dokumen Proyek (`README.md` & `AGENTS.md`)**
   - **Konteks:** Instruktur untuk memahami basis kode ke depannya.
   - **Tindakan:** Telah meninjau arsitektur proyek, stack (Bun + Elysia + AI + Scraping), dan pemahaman limitasi (seperti jangan mengubah file lain selain `programs.ts` untuk modifikasi info siaran radio) yang tercantum di file README.md dan AGENTS.md.
+
+**Tanggal:** 7 Mei 2026
+
+- [x] **Melakukan Testing Endpoint `/generate` dan Memastikan Output Docx Valid**
+  - **Konteks:** Memastikan bahwa API Deepseek mereturn format JSON yang benar tanpa tag markdown (backticks) dan dapat dikonversi menjadi file Docx.
+  - **Tindakan:** Menguji dengan payload tema "Pentingnya Belajar Coding" untuk program "sunset-mood". Sukses memvalidasi file `Naskah_Pentingnya Belajar Coding.docx` yang terbuat secara utuh dengan struktur XML di dalamnya yang valid.
+
+- [x] **Melakukan Testing dan Perbaikan Endpoint `/scrape` pada Portal Berita**
+  - **Konteks:** Mengetes web scraping pada artikel Kompas, CNN Indonesia, dan Detik untuk memastikan parameter judul dan ringkasan diambil dengan benar.
+  - **Tindakan:** Memperbaiki sistem pencocokan domain menjadi `.includes()` agar dapat menjangkau subdomain seperti `money.kompas.com`. Serta memperbaiki selector CSS untuk CNN Indonesia dari `h1.title` menjadi `h1`. Ketiga portal berita sukses tereksplorasi.
