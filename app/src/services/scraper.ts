@@ -3,7 +3,7 @@ import * as cheerio from "cheerio"
 // selector per domain — tambah sesuai kebutuhan
 const DOMAIN_SELECTORS: Record<string, { title: string; content: string }> = {
   "kompas.com"       : { title: "h1.read__title",      content: "div.read__content p"     },
-  "cnnindonesia.com" : { title: "h1.title",             content: "div.detail-text p"       },
+  "cnnindonesia.com" : { title: "h1",             content: "div.detail-text p"       },
   "tribunnews.com"   : { title: "h1#judul",             content: "div#article-body p"      },
   "detik.com"        : { title: "h1.detail__title",     content: "div.detail__body-text p" },
   "tempo.co"         : { title: "h1.title",             content: "div.detail-konten p"     },
@@ -32,7 +32,14 @@ export async function scrapeArticle(url: string) {
   const html     = await res.text()
   const $        = cheerio.load(html)
   const domain   = getDomain(url)
-  const selector = DOMAIN_SELECTORS[domain] ?? FALLBACK
+
+  let selector = FALLBACK
+  for (const [key, val] of Object.entries(DOMAIN_SELECTORS)) {
+    if (domain.includes(key)) {
+      selector = val
+      break
+    }
+  }
 
   const judul = $(selector.title).first().text().trim()
 
