@@ -96,9 +96,6 @@ function App() {
         <header className="topbar">
           <div className="topbar-inner">
             <div className="topbar-left">
-              <button className="menu-toggle" type="button">
-                <span className="material-symbols-outlined">menu</span>
-              </button>
               <h1>{currentView === 'generator' ? 'Generate Naskah Radio' : 'Program Library'}</h1>
             </div>
             <nav className="topbar-nav">
@@ -136,7 +133,7 @@ function App() {
 
               <form className="form-grid" onSubmit={handleSubmit}>
                 <div className="field-group">
-                  <label htmlFor="article_link">Link Artikel Berita</label>
+                  <label htmlFor="article_link">Link Artikel Berita (opsional)</label>
                   <div className="field-input-wrapper">
                     <span className="material-symbols-outlined">link</span>
                     <input
@@ -145,7 +142,7 @@ function App() {
                       type="url"
                       value={articleLink}
                       onChange={(event) => setArticleLink(event.target.value)}
-                      placeholder="https://contoh-berita.com/artikel"
+                      placeholder="Opsional: https://contoh-berita.com/artikel"
                     />
                   </div>
                 </div>
