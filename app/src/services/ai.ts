@@ -23,7 +23,7 @@ export async function generateNaskah(
     : `Tulis naskah siaran radio dengan tema: ${tema}`
 
   const response = await client.chat.completions.create({
-    model     : "deepseek-chat",
+    model     : "deepseek-v4-flash",
     max_tokens: 8000,
     response_format: { type: "json_object" },
     messages  : [
