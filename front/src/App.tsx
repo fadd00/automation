@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react'
+import { useState, useEffect, useRef, type FormEvent } from 'react'
+import { renderAsync } from 'docx-preview'
 import './App.css'
 
 interface RadioProgram {
@@ -46,8 +47,23 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [previewData, setPreviewData] = useState<PreviewData | null>(null)
   const [isDownloading, setIsDownloading] = useState(false)
+  const previewContainerRef = useRef<HTMLDivElement>(null)
 
   const selectedProgram = RADIO_PROGRAMS.find(p => p.id === programType)
+
+  useEffect(() => {
+    if (previewData && previewContainerRef.current) {
+      // Clear previous content
+      previewContainerRef.current.innerHTML = ''
+      
+      // Render docx preview
+      renderAsync(previewData.blob, previewContainerRef.current)
+        .catch((error) => {
+          console.error('Error rendering docx preview:', error)
+          previewContainerRef.current!.innerHTML = '<p style="color: red;">Gagal memuat preview dokumen</p>'
+        })
+    }
+  }, [previewData])
 
   const handleGenerate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -347,6 +363,12 @@ function App() {
                           <span className="meta-value">{previewData.filename}</span>
                         </div>
                       </div>
+                    </div>
+
+                    {/* Docx Preview Viewer */}
+                    <div className="preview-viewer">
+                      <h4 className="preview-viewer-title">Pratinjau Dokumen</h4>
+                      <div className="docx-preview-container" ref={previewContainerRef}></div>
                     </div>
 
                     {/* Info note */}

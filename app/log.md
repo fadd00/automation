@@ -48,3 +48,20 @@
 - [x] **Menambahkan Properti `tabStops` pada Pembuatan Paragraf Docx**
   - **Konteks:** Spasi antar tab untuk identasi informasi program seperti "Judul Naskah", "Gaya Penyiar", dll sering kali kurang sejajar/absolut karena bergantung pada manual multispaces (single atau double tab `\t\t`).
   - **Tindakan:** Mengimpor `TabStopType` dan `TabStopPosition` dari API `docx` lalu mengaplikasikannya di fungsi `makeTabPara` pada `src/services/docx.ts`. Semua tab kini diset satu indentasi absolut pada titik `2835 DXA` sehingga alignment informasi program yang digenerate selalu rapih tidak peduli panjang karakternya.
+
+**Tanggal:** 18 Mei 2026
+
+- [x] **Menambahkan Fitur Preview Dokumen DOCX pada Frontend**
+  - **Konteks:** User meminta fitur untuk melihat pratinjau naskah (.docx) sebelum melakukan download, sehingga pengguna dapat memverifikasi konten dokumen terlebih dahulu.
+  - **Tindakan:** 
+    - Instalasi library `docx-preview@0.3.7` menggunakan `bun add` pada folder `front/`.
+    - Update `src/App.tsx` dengan menambahkan import `useEffect`, `useRef`, dan `renderAsync` dari `docx-preview`.
+    - Tambahkan `previewContainerRef` (useRef) untuk menyimpan referensi DOM element tempat dokumen di-render.
+    - Implementasi `useEffect` hook yang otomatis merender preview dokumen ketika `previewData` berubah, dengan error handling untuk menampilkan pesan jika rendering gagal.
+    - Tambahkan JSX container baru `<div className="docx-preview-container" ref={previewContainerRef}></div>` di dalam preview panel setelah meta info.
+    - Update `src/App.css` dengan styling baru:
+      - `.preview-viewer`: Container utama dengan border dan rounded corners
+      - `.preview-viewer-title`: Label styling untuk "Pratinjau Dokumen"
+      - `.docx-preview-container`: Background putih, max-height 500px dengan overflow scroll, padding, dan styling untuk elemen `<p>` & `<table>` yang di-render oleh docx-preview
+    - Build verification: TypeScript dan Vite build berhasil tanpa error (0 errors, bundle size: 374.03 kB gzipped 111.97 kB).
+  - **Hasil Akhir:** User sekarang dapat melihat preview dokumen langsung di panel preview dengan kemampuan scroll, sebelum melakukan download file.
