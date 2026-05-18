@@ -37,6 +37,7 @@ Struktur JSON yang WAJIB diikuti persis:
 {
   "opening": [
     {"col1": "Backsound", "col2": ":", "col3": "IN-UP-DOWN-OUT"},
+    {"col1": "Penyiar",   "col2": ":", "col3": "Disiarkan langsung dari jalan kenari nomor 2 yogyakarta / JBR / Jogja Belajar Radio mengudara untuk sobat belajar semua //"},
     {"col1": "Penyiar",   "col2": ":", "col3": "<teks opening penyiar — minimal 80 kata — energik dan hangat>"},
     {"col1": "Backsound", "col2": ":", "col3": "UP-DOWN-OUT"},
     {"col1": "Musik",     "col2": ":", "col3": "[Lagu / Iklan]"}
