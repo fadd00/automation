@@ -58,7 +58,7 @@ function App() {
       
       // Render docx preview
       renderAsync(previewData.blob, previewContainerRef.current)
-        .catch((error) => {
+        .catch((error: unknown) => {
           console.error('Error rendering docx preview:', error)
           previewContainerRef.current!.innerHTML = '<p style="color: red;">Gagal memuat preview dokumen</p>'
         })
@@ -135,8 +135,9 @@ function App() {
         filename,
       })
 
-    } catch (error: any) {
-      alert(`Terjadi kesalahan: ${error.message}`)
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Terjadi kesalahan yang tidak diketahui'
+      alert(`Terjadi kesalahan: ${message}`)
     } finally {
       setIsGenerating(false)
     }
@@ -156,8 +157,9 @@ function App() {
       a.click()
       window.URL.revokeObjectURL(downloadUrl)
       a.remove()
-    } catch (error: any) {
-      alert(`Gagal mengunduh: ${error.message}`)
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Gagal mengunduh file'
+      alert(`Gagal mengunduh: ${message}`)
     } finally {
       setIsDownloading(false)
     }
