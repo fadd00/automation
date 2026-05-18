@@ -8,6 +8,16 @@ interface RadioProgram {
   description?: string
 }
 
+interface PreviewData {
+  title: string
+  programName: string
+  programFullName: string
+  articleLink?: string
+  generatedAt: string
+  blob: Blob
+  filename: string
+}
+
 const RADIO_PROGRAMS: RadioProgram[] = [
   { id: 'gudeg_jogja', name: 'GUDEG JOGJA', fullName: 'GOOD MORNING MARI MANDEG MAMPIR JBR AJA', description: 'Program pagi yang energik untuk memulai hari dengan semangat' },
   { id: 'lanosta_zone', name: 'LANOSTA ZONE', fullName: 'LAGU NOSTALGIA', description: 'Memutar lagu-lagu nostalgia yang menenangkan' },
@@ -34,13 +44,20 @@ function App() {
   const [programType, setProgramType] = useState('')
   const [scriptTitle, setScriptTitle] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
+  const [previewData, setPreviewData] = useState<PreviewData | null>(null)
+  const [isDownloading, setIsDownloading] = useState(false)
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const selectedProgram = RADIO_PROGRAMS.find(p => p.id === programType)
+
+  const handleGenerate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (!programType) return alert('Pilih program radio terlebih dahulu!')
     if (!scriptTitle) return alert('Masukkan judul naskah!')
 
+    // Reset preview sebelumnya
+    setPreviewData(null)
     setIsGenerating(true)
+
     try {
       let newsContext = undefined
 
@@ -51,12 +68,12 @@ function App() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ url: articleLink })
         })
-        
+
         if (!scrapeRes.ok) {
           const err = await scrapeRes.json().catch(() => ({}))
-          throw new Error(err.message || 'Gagal melakukan scrape artikel')
+          throw new Error((err as any).message || 'Gagal melakukan scrape artikel')
         }
-        
+
         const scrapeData = await scrapeRes.json()
         newsContext = scrapeData.ringkasan
       }
@@ -74,32 +91,33 @@ function App() {
 
       if (!generateRes.ok) {
         const err = await generateRes.json().catch(() => ({}))
-        throw new Error(err.message || 'Gagal membuat naskah')
+        throw new Error((err as any).message || 'Gagal membuat naskah')
       }
 
-      // 3. Download file DOCX
+      // 3. Simpan blob ke state — belum langsung download
       const blob = await generateRes.blob()
-      const downloadUrl = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.style.display = 'none'
-      a.href = downloadUrl
-      
-      // Ambil nama file dari header Content-Disposition jika ada (opsional)
+
+      // Ambil nama file dari header Content-Disposition
       const headerDisposition = generateRes.headers.get('Content-Disposition')
       let filename = `Naskah_${scriptTitle.replace(/\s+/g, '_')}.docx`
       if (headerDisposition && headerDisposition.includes('filename=')) {
         const match = headerDisposition.match(/filename="?([^"]+)"?/)
         if (match && match[1]) filename = match[1]
       }
-      
-      a.download = filename
-      document.body.appendChild(a)
-      a.click()
-      
-      // Cleanup
-      window.URL.revokeObjectURL(downloadUrl)
-      a.remove()
-      alert('Berhasil membuat dan mengunduh naskah!')
+
+      // 4. Set preview state
+      setPreviewData({
+        title: scriptTitle,
+        programName: selectedProgram?.name ?? programType,
+        programFullName: selectedProgram?.fullName ?? programType,
+        articleLink: articleLink || undefined,
+        generatedAt: new Date().toLocaleString('id-ID', {
+          dateStyle: 'full',
+          timeStyle: 'short'
+        }),
+        blob,
+        filename,
+      })
 
     } catch (error: any) {
       alert(`Terjadi kesalahan: ${error.message}`)
@@ -108,26 +126,37 @@ function App() {
     }
   }
 
+  const handleDownload = () => {
+    if (!previewData) return
+    setIsDownloading(true)
+
+    try {
+      const downloadUrl = window.URL.createObjectURL(previewData.blob)
+      const a = document.createElement('a')
+      a.style.display = 'none'
+      a.href = downloadUrl
+      a.download = previewData.filename
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(downloadUrl)
+      a.remove()
+    } catch (error: any) {
+      alert(`Gagal mengunduh: ${error.message}`)
+    } finally {
+      setIsDownloading(false)
+    }
+  }
+
   const heroIcons = [
-    'menu_book',
-    'workspace_premium',
-    'edit',
-    'school',
-    'military_tech',
-    'draw',
-    'auto_stories',
-    'history_edu',
+    'menu_book', 'workspace_premium', 'edit', 'school',
+    'military_tech', 'draw', 'auto_stories', 'history_edu',
   ]
 
   return (
     <div className="app-shell">
       <aside className="sidebar">
         <div className="brand-header">
-          <img
-            alt="JB Radio Logo"
-            className="brand-logo"
-            src="/logo.jpeg"
-          />
+          <img alt="JB Radio Logo" className="brand-logo" src="/logo.jpeg" />
           <p className="brand-tagline">Generasi Cerdas Masa Depan</p>
         </div>
 
@@ -152,12 +181,7 @@ function App() {
           </a>
         </nav>
 
-        <div className="sidebar-footer">
-          <button className="primary-cta" type="button" onClick={() => setCurrentView('generator')}>
-            <span className="material-symbols-outlined">add</span>
-            New Script
-          </button>
-        </div>
+        <div className="sidebar-footer"></div>
       </aside>
 
       <div className="workspace-area">
@@ -172,78 +196,184 @@ function App() {
         <main className="content-area">
           <div className="hero-decor">
             {heroIcons.map((icon) => (
-              <span key={icon} className="material-symbols-outlined hero-icon">
-                {icon}
-              </span>
+              <span key={icon} className="material-symbols-outlined hero-icon">{icon}</span>
             ))}
           </div>
 
           {currentView === 'generator' ? (
-            <section className="form-card">
-              <div className="form-header">
-                <h2>Buat Naskah Radio</h2>
-                <p>Konversi artikel berita menjadi naskah siaran profesional.</p>
-              </div>
+            <div className="generator-layout">
 
-              <form className="form-grid" onSubmit={handleSubmit}>
-                <div className="field-group">
-                  <label htmlFor="article_link">Link Artikel Berita (opsional)</label>
-                  <div className="field-input-wrapper">
-                    <span className="material-symbols-outlined">link</span>
-                    <input
-                      id="article_link"
-                      name="article_link"
-                      type="url"
-                      value={articleLink}
-                      onChange={(event) => setArticleLink(event.target.value)}
-                      placeholder="Opsional: https://contoh-berita.com/artikel"
-                    />
-                  </div>
+              {/* ── FORM CARD ── */}
+              <section className="form-card">
+                <div className="form-header">
+                  <h2>Buat Naskah Radio</h2>
+                  <p>Konversi artikel berita menjadi naskah siaran profesional.</p>
                 </div>
 
-                <div className="field-group">
-                  <label htmlFor="program_type">Program Radio</label>
-                  <div className="field-input-wrapper">
-                    <select
-                      id="program_type"
-                      name="program_type"
-                      value={programType}
-                      onChange={(event) => setProgramType(event.target.value)}
+                <form className="form-grid" onSubmit={handleGenerate}>
+                  <div className="field-group">
+                    <label htmlFor="article_link">Link Artikel Berita (opsional)</label>
+                    <div className="field-input-wrapper">
+                      <span className="material-symbols-outlined">link</span>
+                      <input
+                        id="article_link"
+                        name="article_link"
+                        type="url"
+                        value={articleLink}
+                        onChange={(e) => setArticleLink(e.target.value)}
+                        placeholder="Opsional: https://contoh-berita.com/artikel"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="field-group">
+                    <label htmlFor="program_type">Program Radio</label>
+                    <div className="field-input-wrapper">
+                      <select
+                        id="program_type"
+                        name="program_type"
+                        value={programType}
+                        onChange={(e) => setProgramType(e.target.value)}
+                      >
+                        <option value="">Pilih program...</option>
+                        {RADIO_PROGRAMS.map((program) => (
+                          <option key={program.id} value={program.id}>{program.name}</option>
+                        ))}
+                      </select>
+                      <span className="material-symbols-outlined arrow-icon">keyboard_arrow_down</span>
+                    </div>
+                  </div>
+
+                  <div className="field-group">
+                    <label htmlFor="script_title">Judul Naskah</label>
+                    <div className="field-input-wrapper">
+                      <span className="material-symbols-outlined">edit</span>
+                      <input
+                        id="script_title"
+                        name="script_title"
+                        type="text"
+                        value={scriptTitle}
+                        onChange={(e) => setScriptTitle(e.target.value)}
+                        placeholder="Masukkan judul naskah..."
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-actions">
+                    <button
+                      className="generate-button"
+                      type="submit"
+                      disabled={isGenerating}
                     >
-                      <option value="">Pilih program...</option>
-                      {RADIO_PROGRAMS.map((program) => (
-                        <option key={program.id} value={program.id}>
-                          {program.name}
-                        </option>
-                      ))}
-                    </select>
-                    <span className="material-symbols-outlined arrow-icon">keyboard_arrow_down</span>
+                      <span className="material-symbols-outlined">
+                        {isGenerating ? 'hourglass_top' : 'magic_button'}
+                      </span>
+                      {isGenerating ? 'Memproses Naskah...' : 'Generate Naskah'}
+                    </button>
                   </div>
-                </div>
+                </form>
+              </section>
 
-                <div className="field-group">
-                  <label htmlFor="script_title">Judul Naskah</label>
-                  <div className="field-input-wrapper">
-                    <span className="material-symbols-outlined">edit</span>
-                    <input
-                      id="script_title"
-                      name="script_title"
-                      type="text"
-                      value={scriptTitle}
-                      onChange={(event) => setScriptTitle(event.target.value)}
-                      placeholder="Masukkan judul naskah..."
-                    />
+              {/* ── PREVIEW PANEL ── */}
+              <section className={`preview-panel ${previewData ? 'has-content' : ''} ${isGenerating ? 'is-loading' : ''}`}>
+                {!previewData && !isGenerating && (
+                  <div className="preview-empty">
+                    <span className="material-symbols-outlined preview-empty-icon">article</span>
+                    <p className="preview-empty-title">Preview Naskah</p>
+                    <p className="preview-empty-desc">
+                      Naskah yang berhasil digenerate akan tampil di sini sebelum diunduh.
+                    </p>
                   </div>
-                </div>
+                )}
 
-                <div className="form-actions">
-                  <button className="generate-button" type="submit" disabled={isGenerating}>
-                    <span className="material-symbols-outlined">magic_button</span>
-                    {isGenerating ? 'Memproses Naskah...' : 'Generate & Download'}
-                  </button>
-                </div>
-              </form>
-            </section>
+                {isGenerating && (
+                  <div className="preview-loading">
+                    <span className="material-symbols-outlined spin-icon">autorenew</span>
+                    <p className="preview-loading-title">Sedang membuat naskah...</p>
+                    <p className="preview-loading-desc">Mohon tunggu sebentar</p>
+                  </div>
+                )}
+
+                {previewData && !isGenerating && (
+                  <div className="preview-content">
+                    {/* Success badge */}
+                    <div className="preview-badge">
+                      <span className="material-symbols-outlined">check_circle</span>
+                      Naskah Berhasil Dibuat
+                    </div>
+
+                    <h3 className="preview-title">{previewData.title}</h3>
+
+                    {/* Meta info */}
+                    <div className="preview-meta">
+                      <div className="meta-item">
+                        <span className="material-symbols-outlined meta-icon">radio</span>
+                        <div className="meta-text">
+                          <span className="meta-label">Program</span>
+                          <span className="meta-value">{previewData.programName}</span>
+                          <span className="meta-sub">{previewData.programFullName}</span>
+                        </div>
+                      </div>
+
+                      <div className="meta-item">
+                        <span className="material-symbols-outlined meta-icon">schedule</span>
+                        <div className="meta-text">
+                          <span className="meta-label">Dibuat pada</span>
+                          <span className="meta-value">{previewData.generatedAt}</span>
+                        </div>
+                      </div>
+
+                      {previewData.articleLink && (
+                        <div className="meta-item">
+                          <span className="material-symbols-outlined meta-icon">link</span>
+                          <div className="meta-text">
+                            <span className="meta-label">Sumber Artikel</span>
+                            <a
+                              className="meta-link"
+                              href={previewData.articleLink}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {previewData.articleLink}
+                            </a>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="meta-item">
+                        <span className="material-symbols-outlined meta-icon">description</span>
+                        <div className="meta-text">
+                          <span className="meta-label">Nama File</span>
+                          <span className="meta-value">{previewData.filename}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Info note */}
+                    <div className="preview-note">
+                      <span className="material-symbols-outlined">info</span>
+                      <p>
+                        Naskah siap diunduh dalam format <strong>.docx</strong>.
+                        Klik tombol di bawah untuk menyimpan file ke perangkat Anda.
+                      </p>
+                    </div>
+
+                    {/* Download button */}
+                    <button
+                      className="download-button"
+                      onClick={handleDownload}
+                      disabled={isDownloading}
+                    >
+                      <span className="material-symbols-outlined">
+                        {isDownloading ? 'hourglass_top' : 'download'}
+                      </span>
+                      {isDownloading ? 'Mengunduh...' : 'Download Naskah (.docx)'}
+                    </button>
+                  </div>
+                )}
+              </section>
+
+            </div>
           ) : (
             <section className="program-library">
               <div className="library-header">

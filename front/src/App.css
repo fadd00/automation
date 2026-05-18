@@ -3,42 +3,40 @@
   font-family: 'Inter', system-ui, sans-serif;
   color: #1d1c13;
   
-  /* Palet Warna Asli (Tidak Diubah) */
   --primary: #686000;
   --primary-strong: #a29502;
   --secondary: #665f2c;
   
-  /* Variable untuk efek Futuristik (Glassmorphism & Glow) */
   --glass-red: rgba(185, 28, 28, 0.85);
   --glass-green: rgba(0, 104, 55, 0.85);
   --glass-orange: rgba(255, 167, 5, 0.80);
   --glass-white: rgba(255, 255, 255, 0.85);
   --glass-border: rgba(255, 255, 255, 0.3);
-  --glow-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
   min-height: 100vh;
   color: #1d1c13;
-  background-color: #000; /* Fallback base */
+  background-color: #000;
 }
 
-button,
-input,
-select {
-  font: inherit;
-}
+button, input, select { font: inherit; }
 
 button {
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
 
+button:hover:not(:disabled) { transform: translateY(-2px); }
+button:active:not(:disabled) { transform: translateY(0); }
+
+/* =========================================
+   APP SHELL
+========================================= */
 .app-shell {
   display: flex;
   min-height: 100vh;
@@ -46,9 +44,6 @@ button {
   overflow: hidden;
 }
 
-/* =========================================
-   BACKGROUND FUTURISTIK
-========================================= */
 .workspace-area {
   position: relative;
   flex: 1;
@@ -61,18 +56,18 @@ button {
   content: "";
   position: absolute;
   inset: 0;
-  background-color: #000000; 
-  background-image: url("./assets/bg-tekkomdik.jpg"); 
+  background-color: #000000;
+  background-image: url("./assets/bg-tekkomdik.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.6; /* Disesuaikan sedikit agar glassmorphism lebih 'pop' */
+  opacity: 0.6;
   pointer-events: none;
   z-index: 0;
 }
 
 /* =========================================
-   SIDEBAR (Glass Red)
+   SIDEBAR
 ========================================= */
 .sidebar {
   display: none;
@@ -89,11 +84,7 @@ button {
   z-index: 10;
 }
 
-.brand-header {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.brand-header { display: flex; flex-direction: column; gap: 12px; }
 
 .brand-logo {
   width: 100%;
@@ -111,11 +102,7 @@ button {
   opacity: 0.85;
 }
 
-.main-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+.main-nav { display: flex; flex-direction: column; gap: 10px; }
 
 .nav-link {
   display: inline-flex;
@@ -125,48 +112,25 @@ button {
   border-radius: 14px;
   color: white;
   text-decoration: none;
-  transition: all 0.3s ease;
   opacity: 0.8;
-  border: 1px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   background: none;
+  transition: all 0.3s ease;
 }
 
 .nav-link:hover,
 .nav-link.active {
   background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.35);
   box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
   opacity: 1;
-  transform: translateX(4px); /* Efek slide ringan saat hover */
+  transform: translateX(4px);
 }
 
-.sidebar-footer {
-  margin-top: auto;
-}
-
-.primary-cta {
-  width: 100%;
-  border: none;
-  background: rgba(255, 255, 255, 0.95);
-  color: #b91c1c;
-  padding: 14px 16px;
-  border-radius: 16px;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
-
-.primary-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
-  background: #ffffff;
-}
+.sidebar-footer { margin-top: auto; }
 
 /* =========================================
-   TOPBAR (Glass Green)
+   TOPBAR
 ========================================= */
 .topbar {
   position: sticky;
@@ -198,22 +162,31 @@ button {
 }
 
 /* =========================================
-   MAIN CONTENT AREA
+   CONTENT AREA
 ========================================= */
 .content-area {
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   padding: 32px 16px 40px;
   position: relative;
 }
 
-/* Floating Animation untuk Hero Decor (Ikon-ikon di belakang) */
 @keyframes float {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-15px) rotate(5deg); }
+  0%   { transform: translateY(0px) rotate(0deg); }
+  50%  { transform: translateY(-15px) rotate(5deg); }
   100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .hero-decor {
@@ -230,37 +203,44 @@ button {
   color: #fff;
 }
 
-.hero-icon {
-  font-size: 32px;
-  animation: float 8s ease-in-out infinite;
-}
+.hero-icon { font-size: 32px; animation: float 8s ease-in-out infinite; }
+.hero-icon:nth-child(even) { animation-delay: -4s; animation-duration: 10s; }
 
-.hero-icon:nth-child(even) {
-  animation-delay: -4s;
-  animation-duration: 10s;
+/* =========================================
+   GENERATOR LAYOUT (split: form + preview)
+========================================= */
+.generator-layout {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  max-width: 1200px;
+  align-items: stretch; /* kedua card sama tinggi */
 }
 
 /* =========================================
-   FORM CARD (Glass Orange Glowing)
+   FORM CARD
 ========================================= */
 .form-card {
-  position: relative;
-  width: min(100%, 720px);
+  flex: 0 0 auto;
+  width: min(100%, 500px);
+  display: flex;
+  flex-direction: column;
   background: var(--glass-orange);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 28px;
-  box-shadow: 0 24px 60px rgba(255, 167, 5, 0.4), 
+  box-shadow: 0 24px 60px rgba(255, 167, 5, 0.4),
               inset 0 0 20px rgba(255, 255, 255, 0.2);
-  padding: 40px;
-  z-index: 1;
+  padding: 36px;
 }
 
 .form-header h2 {
   margin: 0 0 10px;
-  font-size: clamp(28px, 4vw, 42px);
-  line-height: 1.05;
+  font-size: clamp(22px, 3vw, 34px);
+  line-height: 1.1;
   color: white;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
@@ -268,19 +248,12 @@ button {
 .form-header p {
   margin: 0;
   color: rgba(255, 255, 255, 0.95);
-  font-size: 1.05rem;
+  font-size: 0.95rem;
 }
 
-.form-grid {
-  margin-top: 32px;
-  display: grid;
-  gap: 22px;
-}
+.form-grid { margin-top: 28px; display: grid; gap: 20px; flex: 1; align-content: start; }
 
-.field-group {
-  display: grid;
-  gap: 10px;
-}
+.field-group { display: grid; gap: 10px; }
 
 .field-group label {
   color: white;
@@ -294,7 +267,6 @@ button {
   align-items: center;
 }
 
-/* Futuristik Inputs */
 .field-input-wrapper input,
 .field-input-wrapper select {
   width: 100%;
@@ -303,10 +275,9 @@ button {
   border-radius: 16px;
   padding: 14px 16px 14px 44px;
   color: #1d1c13;
-  font-size: 16px;
+  font-size: 15px;
   outline: none;
   transition: all 0.3s ease;
-  position: relative;
   z-index: 2;
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
 }
@@ -321,8 +292,7 @@ button {
 .field-input-wrapper select:focus {
   background: #ffffff;
   border-color: #ffffff;
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.4),
-              0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.4), 0 10px 20px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
 }
 
@@ -335,32 +305,27 @@ button {
   pointer-events: none;
 }
 
-.arrow-icon {
-  right: 14px;
-  left: auto;
-  z-index: 3;
-}
+.arrow-icon { right: 14px; left: auto; z-index: 3; }
 
 .form-actions {
-  padding-top: 24px;
-  margin-top: 12px;
+  padding-top: 20px;
+  margin-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.3);
   display: flex;
   justify-content: flex-end;
 }
 
-/* Submit Button Glow */
 .generate-button {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+  background: rgba(255, 255, 255, 0.12);
   color: white;
-  padding: 15px 28px;
-  border-radius: 18px;
+  padding: 14px 24px;
+  border-radius: 14px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   font-weight: 700;
-  box-shadow: 0 10px 30px rgba(104, 96, 0, 0.5);
+  font-size: 15px;
+  box-shadow: 0 10px 30px rgba(104, 96, 0, 0.35);
   position: relative;
   overflow: hidden;
 }
@@ -375,17 +340,167 @@ button {
   transition: opacity 0.3s;
 }
 
-.generate-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(104, 96, 0, 0.7);
-}
-
-.generate-button:hover::after {
-  opacity: 1;
-}
+.generate-button:hover:not(:disabled) { background: rgba(255, 255, 255, 0.2); box-shadow: 0 14px 36px rgba(104, 96, 0, 0.45); }
+.generate-button:hover::after { opacity: 1; }
+.generate-button:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
 /* =========================================
-   PROGRAM LIBRARY (Glass Cards)
+   PREVIEW PANEL
+========================================= */
+.preview-panel {
+  flex: 1;
+  min-width: 0;
+  background: var(--glass-white);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 28px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12),
+              inset 0 0 20px rgba(255, 255, 255, 0.3);
+  padding: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.4s ease;
+}
+
+.preview-panel.has-content {
+  align-items: flex-start;
+  justify-content: flex-start;
+  box-shadow: 0 24px 60px rgba(0, 104, 55, 0.18),
+              inset 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.preview-panel.is-loading {
+  box-shadow: 0 24px 60px rgba(255, 167, 5, 0.2),
+              inset 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* Empty */
+.preview-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.preview-empty-icon { font-size: 56px; color: #ccc; display: block; }
+.preview-empty-title { margin: 0; font-size: 18px; font-weight: 600; color: #555; }
+.preview-empty-desc { margin: 0; font-size: 14px; color: #888; max-width: 240px; line-height: 1.6; }
+
+/* Loading */
+.preview-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.spin-icon { font-size: 48px; color: var(--primary-strong); animation: spin 1s linear infinite; display: block; }
+.preview-loading-title { margin: 0; font-size: 17px; font-weight: 600; color: #333; }
+.preview-loading-desc { margin: 0; font-size: 14px; color: #777; }
+
+/* Content */
+.preview-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeSlideIn 0.35s ease;
+}
+
+.preview-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 104, 55, 0.1);
+  border: 1px solid rgba(0, 104, 55, 0.25);
+  color: #00683a;
+  padding: 7px 14px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.preview-badge .material-symbols-outlined { font-size: 17px; }
+
+.preview-title {
+  margin: 0;
+  font-size: clamp(18px, 2.2vw, 26px);
+  font-weight: 700;
+  color: #1d1c13;
+  line-height: 1.25;
+}
+
+/* Meta */
+.preview-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.meta-item { display: flex; align-items: flex-start; gap: 12px; }
+
+.meta-icon { font-size: 20px; color: var(--primary-strong); flex-shrink: 0; margin-top: 2px; }
+
+.meta-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+.meta-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
+.meta-value { font-size: 14px; font-weight: 600; color: #1d1c13; word-break: break-word; }
+.meta-sub { font-size: 12px; color: #666; }
+.meta-link { font-size: 13px; color: var(--primary); text-decoration: underline; word-break: break-all; }
+
+/* Note */
+.preview-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(255, 167, 5, 0.1);
+  border: 1px solid rgba(255, 167, 5, 0.28);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: #5a4800;
+  line-height: 1.6;
+}
+
+.preview-note .material-symbols-outlined { font-size: 18px; color: #a29502; flex-shrink: 0; margin-top: 1px; }
+.preview-note p { margin: 0; }
+
+/* Download button */
+.download-button {
+  width: 100%;
+  background: linear-gradient(135deg, #00683a 0%, #004d2c 100%);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 15px;
+  border: none;
+  box-shadow: 0 8px 24px rgba(0, 104, 55, 0.38);
+  letter-spacing: 0.02em;
+}
+
+.download-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #007a44 0%, #005c34 100%);
+  box-shadow: 0 12px 32px rgba(0, 104, 55, 0.5);
+}
+
+.download-button:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+/* =========================================
+   PROGRAM LIBRARY
 ========================================= */
 .program-library {
   position: relative;
@@ -393,11 +508,9 @@ button {
   z-index: 1;
 }
 
-/* Header dibikin putih dan pake shadow agar terbaca di atas background gambar */
 .library-header h2 {
   margin: 0 0 10px;
   font-size: clamp(28px, 4vw, 42px);
-  line-height: 1.05;
   color: #ffffff;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
@@ -447,90 +560,50 @@ button {
   box-shadow: 0 8px 20px rgba(255, 167, 5, 0.4);
 }
 
-.program-icon .material-symbols-outlined {
-  color: white;
-  font-size: 32px;
-}
+.program-icon .material-symbols-outlined { color: white; font-size: 32px; }
 
-.program-card h3 {
-  margin: 0 0 6px;
-  font-size: 18px;
-  font-weight: 700;
-  color: #1d1c13;
-}
-
-.program-subtitle {
-  margin: 0 0 12px;
-  font-size: 13px;
-  color: var(--primary-strong);
-  font-weight: 700;
-  letter-spacing: 0.05em;
-}
-
-.program-description {
-  margin: 0 0 20px;
-  font-size: 14px;
-  color: #4a4735;
-  line-height: 1.6;
-  flex: 1;
-}
+.program-card h3 { margin: 0 0 6px; font-size: 18px; font-weight: 700; color: #1d1c13; }
+.program-subtitle { margin: 0 0 12px; font-size: 13px; color: var(--primary-strong); font-weight: 700; letter-spacing: 0.05em; }
+.program-description { margin: 0 0 20px; font-size: 14px; color: #4a4735; line-height: 1.6; flex: 1; }
 
 .program-select-btn {
-  border: none;
   background: var(--primary);
   color: white;
   padding: 12px 16px;
   border-radius: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(104, 96, 0, 0.3);
 }
 
 .program-select-btn:hover {
   background: var(--primary-strong);
-  transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(104, 96, 0, 0.4);
 }
 
-.program-select-btn:active {
-  transform: translateY(0);
-}
-
 /* =========================================
-   RESPONSIVE DESIGN
+   RESPONSIVE
 ========================================= */
 @media (min-width: 768px) {
-  .sidebar {
-    display: flex;
-  }
+  .sidebar { display: flex; }
+}
+
+@media (max-width: 1024px) {
+  .generator-layout { flex-direction: column; align-items: stretch; }
+  .form-card { width: 100%; }
 }
 
 @media (max-width: 900px) {
-  .app-shell {
-    flex-direction: column;
-  }
-  .content-area {
-    padding: 24px 16px 32px;
-  }
-  .form-card {
-    padding: 32px;
-  }
-  .program-grid {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  }
+  .app-shell { flex-direction: column; }
+  .content-area { padding: 24px 16px 32px; }
+  .form-card { padding: 28px; }
+  .program-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
 }
 
 @media (max-width: 560px) {
-  .topbar-inner {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  .topbar-inner { flex-direction: column; align-items: flex-start; }
   .field-input-wrapper input,
-  .field-input-wrapper select {
-    padding-left: 42px;
-  }
-  .program-grid {
-    grid-template-columns: 1fr;
-  }
+  .field-input-wrapper select { padding-left: 42px; }
+  .program-grid { grid-template-columns: 1fr; }
+  .form-card, .preview-panel { padding: 22px; }
 }
