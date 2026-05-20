@@ -3,6 +3,7 @@ import './App.css'
 import InputForm from './components/InputForm'
 import PreviewPanel from './components/PreviewPanel'
 import LibraryView from './components/LibraryView'
+import UserGuide from './components/UserGuide'
 import { useGenerate } from './hooks/useGenerate'
 
 const heroIcons = [
@@ -17,7 +18,7 @@ const heroIcons = [
 ]
 
 function App() {
-  const [currentView, setCurrentView] = useState<'generator' | 'library'>('generator')
+  const [currentView, setCurrentView] = useState<'generator' | 'library' | 'guide'>('generator')
   const {
     articleLink,
     programType,
@@ -62,10 +63,13 @@ function App() {
             <span className="material-symbols-outlined">radio</span>
             Program Library
           </button>
-          <a className="nav-link" href="#">
+          <button
+            className={`nav-link ${currentView === 'guide' ? 'active' : ''}`}
+            onClick={() => setCurrentView('guide')}
+          >
             <span className="material-symbols-outlined">menu_book</span>
             User Guide
-          </a>
+          </button>
         </nav>
 
         <div className="sidebar-footer"></div>
@@ -75,7 +79,13 @@ function App() {
         <header className="topbar">
           <div className="topbar-inner">
             <div className="topbar-left">
-              <h1>{currentView === 'generator' ? 'Generate Naskah Radio' : 'Program Library'}</h1>
+              <h1>
+                {currentView === 'generator'
+                  ? 'Generate Naskah Radio'
+                  : currentView === 'library'
+                  ? 'Program Library'
+                  : 'User Guide'}
+              </h1>
             </div>
           </div>
         </header>
@@ -116,8 +126,10 @@ function App() {
                 isDownloading={isDownloading}
               />
             </div>
-          ) : (
+          ) : currentView === 'library' ? (
             <LibraryView programs={programs} onSelectProgram={handleSelectProgram} />
+          ) : (
+            <UserGuide />
           )}
         </main>
       </div>
