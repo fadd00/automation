@@ -34,6 +34,11 @@ function App() {
     handleDownload,
   } = useGenerate()
 
+  const handleSelectProgram = (programId: string) => {
+    setProgramType(programId)
+    setCurrentView('generator')
+  }
+
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -112,7 +117,7 @@ function App() {
               />
             </div>
           ) : (
-            <LibraryView programs={programs} />
+            <LibraryView programs={programs} onSelectProgram={handleSelectProgram} />
           )}
         </main>
       </div>

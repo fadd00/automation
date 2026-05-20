@@ -2,9 +2,10 @@ import type { RadioProgram } from '../types'
 
 interface LibraryViewProps {
   programs: RadioProgram[]
+  onSelectProgram: (programId: string) => void
 }
 
-export default function LibraryView({ programs }: LibraryViewProps) {
+export default function LibraryView({ programs, onSelectProgram }: LibraryViewProps) {
   return (
     <section className="library-view">
       <div className="library-header">
@@ -29,6 +30,13 @@ export default function LibraryView({ programs }: LibraryViewProps) {
 
             <div className="program-card-footer">
               <span className="program-tag">Radio JBR</span>
+              <button
+                className="program-use-btn"
+                onClick={() => onSelectProgram(program.id)}
+              >
+                <span className="material-symbols-outlined">arrow_forward</span>
+                Gunakan Program
+              </button>
             </div>
           </div>
         ))}
