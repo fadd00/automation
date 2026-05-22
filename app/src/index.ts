@@ -18,6 +18,6 @@ const app = new Elysia()
   .use(generateRoute)
   .use(batchRoute)
   .get("/health", () => ({ status: "ok", timestamp: new Date().toISOString() }))
-  .listen(process.env.PORT ?? 3000)
+  .listen(process.env.PORT ?? 4321)
 
 console.log(`🚀 Server running at http://localhost:${app.server?.port}`)
