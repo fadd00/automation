@@ -4,7 +4,8 @@ import { generateNaskah } from "../services/ai"
 import { buildDocx } from "../services/docx"
 import { zipBuffers } from "../services/zip"
 
-const CHUNK_SIZE = 3 // max concurrent request ke Deepseek
+const CHUNK_SIZE = 3 // max concurrent request ke AI
+
 
 async function chunkProcess<T, R>(
   items    : T[],

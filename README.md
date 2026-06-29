@@ -1,6 +1,6 @@
 # JBR Script Generator 🎙️🤖
 
-Aplikasi *Fullstack* (Frontend & Backend) untuk menghasilkan naskah siaran radio Jogja Belajar Radio secara otomatis menggunakan AI (Deepseek / OpenRouter) dan mengubahnya menjadi file `.docx` siap pakai.
+Aplikasi *Fullstack* (Frontend & Backend) untuk menghasilkan naskah siaran radio Jogja Belajar Radio secara otomatis menggunakan AI (OpenAI-compatible API) dan mengubahnya menjadi file `.docx` siap pakai.
 
 Dibangun dengan **React (Vite)** untuk antarmuka pengguna dan **Bun + ElysiaJS** untuk layanan API backend.
 
@@ -12,7 +12,7 @@ Dibangun dengan **React (Vite)** untuk antarmuka pengguna dan **Bun + ElysiaJS**
 |---|---|---|
 | **Frontend** | React, Vite, TypeScript | Antarmuka interaktif pembuat naskah |
 | **Backend** | Bun, ElysiaJS, TypeScript | REST API cepat, menangani AI & pembuatan Docx |
-| **AI API** | OpenAI SDK | Kompatibel standar dengan Deepseek API & OpenRouter |
+| **AI API** | OpenAI SDK | Kompatibel dengan OpenAI / Ollama / LM Studio / vLLM / Groq / provider lainnya |
 | **Scraping** | Cheerio | Ekstraksi konten/berita untuk konteks (*scrape*) |
 | **File Gen** | docx, archiver | Pembuatan dokumen `.docx` dan `.zip` (batch) |
 
@@ -44,7 +44,7 @@ jbr-generator/
 
 ### Prasyarat
 - [Bun](https://bun.sh) v1.0+
-- API Key AI yang aktif (dari platform.deepseek.com atau OpenRouter)
+- Endpoint API OpenAI-compatible (OpenAI, Ollama, LM Studio, Groq, dll — lihat [app/README.md](app/README.md#menjalankan-dengan-llm-lokal) untuk panduan LLM lokal)
 
 ### Langkah-langkah Menjalankan (Satu Port)
 
@@ -55,7 +55,7 @@ Kini Anda tidak perlu menjalankan dua terminal secara terpisah, karena backend o
 git clone <repo-url> jbr-generator
 cd jbr-generator/app
 cp .env.example .env
-# Buka file .env dan isikan DEEPSEEK_API_KEY
+# Buka file .env dan isikan OPENAI_API_KEY, OPENAI_BASE_URL, dan OPENAI_MODEL
 ```
 
 **2. Pasang Dependency & Build Frontend**
@@ -94,6 +94,26 @@ Berdasarkan `FRONTEND_API_DOCS.md` dan `app/README.md`, berikut abstraksi komuni
 
 ---
 
+## 🤖 Menjalankan dengan LLM Lokal
+
+Aplikasi ini mendukung penuh LLM lokal melalui OpenAI-compatible API. Detail lengkap: **[app/README.md — Menjalankan dengan LLM Lokal](app/README.md#menjalankan-dengan-llm-lokal)**
+
+**Cara tercepat dengan Ollama:**
+```bash
+# Install Ollama
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Pull model
+ollama pull llama3.2
+
+# Konfigurasi .env
+OPENAI_API_KEY=ollama
+OPENAI_BASE_URL=http://localhost:11434/v1
+OPENAI_MODEL=llama3.2
+```
+
+---
+
 ## 📝 Changelog / Pembaruan Terkini
 
 Berdasarkan rekaman log penyempurnaan terbaru proyek:
@@ -102,6 +122,6 @@ Berdasarkan rekaman log penyempurnaan terbaru proyek:
 - ✅ **Penyelarasan Program:** Sebanyak 17 sistem program radio sesuai standar UI dituntaskan pada `services/programs.ts`.
 - ✅ **Swagger UI:** Tersemat di jalur `/swagger` menggunakan `@elysiajs/swagger`.
 - ✅ **Ketangguhan Fitur Scraping:** Sistem pencarian domain telah dimodifikasi menggunakan tipe `includes` dan CSS Selector yang fleksibel untuk memangkas error pada *subdomain* portal populer.
-- ✅ **Model AI Adaptif:** Aplikasi telah terbukti sanggup mengakomodasi platform API generik berbasis *OpenAI Wrapper* (termasuk OpenRouter) melengkapi Deepseek.
+- ✅ **OpenAI-Compatible API:** Aplikasi kini sepenuhnya kompatibel dengan OpenAI SDK dan mendukung LLM lokal (Ollama, LM Studio, vLLM) serta provider cloud (OpenAI, Groq, Together AI, Fireworks).
 
-*Dokumentasi histori terperinci dapat ditinjau lebih jauh masuk melalui file `app/log.md` maupun `front/BACKEND_API_DOCS.md`.*
+*Dokumentasi histori terperinci dapat ditinjau lebih jauh melalui file `app/log.md` maupun `front/BACKEND_API_DOCS.md`.*

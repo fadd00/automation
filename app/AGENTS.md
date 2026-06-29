@@ -6,7 +6,7 @@ Dokumen ini adalah panduan untuk AI agent atau LLM (termasuk Claude, Copilot, Cu
 
 ## Gambaran Sistem
 
-Backend ini adalah REST API yang menerima input tema/judul program radio, memanggil Deepseek AI untuk generate naskah siaran dalam format JSON terstruktur, lalu mengonversinya menjadi file `.docx` berformat standar Jogja Belajar Radio.
+Backend ini adalah REST API yang menerima input tema/judul program radio, memanggil LLM (OpenAI-compatible API) untuk generate naskah siaran dalam format JSON terstruktur, lalu mengonversinya menjadi file `.docx` berformat standar Jogja Belajar Radio.
 
 **Runtime:** Bun | **Framework:** ElysiaJS | **Language:** TypeScript
 
@@ -28,7 +28,7 @@ src/
 │   └── batch.ts          # POST /batch
 │
 ├── services/             # Business logic. Semua logic utama ada di sini.
-│   ├── ai.ts             # Satu-satunya file yang boleh memanggil Deepseek API.
+│   ├── ai.ts             # Satu-satunya file yang boleh memanggil LLM API.
 │   ├── docx.ts           # Satu-satunya file yang boleh menggunakan package `docx`.
 │   ├── scraper.ts        # Satu-satunya file yang boleh melakukan HTTP scraping.
 │   └── zip.ts            # Utility untuk zip buffer. Tidak boleh ada side effect.
@@ -74,13 +74,13 @@ Routes hanya boleh berisi:
 
 Jika ada logic lebih dari itu, pindahkan ke service yang sesuai.
 
-### 4. Satu entry point ke Deepseek API
+### 4. Satu entry point ke LLM API
 
-Semua pemanggilan Deepseek API harus melalui fungsi `generateNaskah()` di `src/services/ai.ts`. Jangan instantiate `OpenAI` client di file lain.
+Semua pemanggilan LLM API harus melalui fungsi `generateNaskah()` di `src/services/ai.ts`. Jangan instantiate `OpenAI` client di file lain.
 
 ### 5. Batch processing wajib pakai chunking
 
-Jangan pernah kirim semua request ke Deepseek secara parallel sekaligus. Selalu gunakan fungsi `chunkProcess()` di `src/routes/batch.ts` dengan `CHUNK_SIZE = 3` (atau kurang). Ini untuk menghindari rate limit.
+Jangan pernah kirim semua request ke LLM secara parallel sekaligus. Selalu gunakan fungsi `chunkProcess()` di `src/routes/batch.ts` dengan `CHUNK_SIZE = 3` (atau kurang). Ini untuk menghindari rate limit.
 
 ### 6. Gunakan `Promise.allSettled` bukan `Promise.all` untuk batch
 
@@ -116,7 +116,7 @@ Batch harus tetap berjalan meskipun sebagian item gagal. Gunakan `Promise.allSet
 ### `src/services/ai.ts`
 
 **Yang boleh diubah:**
-- Model yang digunakan (`deepseek-chat` → versi lain jika diperlukan)
+- Model yang digunakan (via env `OPENAI_MODEL`)
 - `max_tokens` jika naskah terpotong
 - Logic strip markdown fence jika format response AI berubah
 
@@ -207,7 +207,7 @@ const CHUNK_SIZE = 3
 // Semua hasil digabung → zip → return
 ```
 
-Jika ingin mengubah `CHUNK_SIZE`, pertimbangkan rate limit Deepseek tier yang digunakan.
+Jika ingin mengubah `CHUNK_SIZE`, pertimbangkan rate limit provider LLM yang digunakan.
 
 ---
 
@@ -228,10 +228,12 @@ Jika ingin mengubah `CHUNK_SIZE`, pertimbangkan rate limit Deepseek tier yang di
 
 | Variable | Digunakan di | Keterangan |
 |---|---|---|
-| `DEEPSEEK_API_KEY` | `src/services/ai.ts` | Wajib ada |
+| `OPENAI_API_KEY` | `src/services/ai.ts` | Wajib ada |
+| `OPENAI_BASE_URL` | `src/services/ai.ts` | Default `https://api.openai.com/v1` |
+| `OPENAI_MODEL` | `src/services/ai.ts` | Default `gpt-4o` |
 | `PORT` | `src/index.ts` | Default `3000` |
 
-Jangan akses `process.env` di luar dua file di atas.
+Jangan akses `process.env` di luar file di atas.
 
 ---
 

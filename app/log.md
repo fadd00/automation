@@ -23,7 +23,7 @@
 **Tanggal:** 7 Mei 2026
 
 - [x] **Melakukan Testing Endpoint `/generate` dan Memastikan Output Docx Valid**
-  - **Konteks:** Memastikan bahwa API Deepseek mereturn format JSON yang benar tanpa tag markdown (backticks) dan dapat dikonversi menjadi file Docx.
+  - **Konteks:** Memastikan bahwa AI API mereturn format JSON yang benar tanpa tag markdown (backticks) dan dapat dikonversi menjadi file Docx.
   - **Tindakan:** Menguji dengan payload tema "Pentingnya Belajar Coding" untuk program "sunset-mood". Sukses memvalidasi file `Naskah_Pentingnya Belajar Coding.docx` yang terbuat secara utuh dengan struktur XML di dalamnya yang valid.
 
 - [x] **Melakukan Testing dan Perbaikan Endpoint `/scrape` pada Portal Berita**
@@ -34,16 +34,16 @@
   - **Tindakan:** Menambahkan bagian instruksi "Cara Menjalankan Frontend dan Backend Bersamaan" di README.md, meliputi perintah startup kedua sisi (`bun run dev`) di port yang berbeda, serta petunjuk terkait manajemen akses CORS.
 
 - [x] **Menambahkan Filter Regex pada Scraper Berita**
-  - **Konteks:** Terdapat sampah teks seperti promosi artikel atau intermezo dari elemen `<p>` di situs berita (yakni "Baca juga:", "Simak video:", "Klik di sini") yang dapat masuk ke prompt DeepSeek dan merusak hasil naskah.
+  - **Konteks:** Terdapat sampah teks seperti promosi artikel atau intermezo dari elemen `<p>` di situs berita (yakni "Baca juga:", "Simak video:", "Klik di sini") yang dapat masuk ke prompt AI dan merusak hasil naskah.
   - **Tindakan:** Memasang pengecekan regex (case-insensitive) `/baca juga|simak video|klik di sini/i` pada `src/services/scraper.ts` untuk mengabaikan dan membuang paragraf yang mengandung kata-kata tersebut.
 
 - [x] **Migrasi dari `fetch` ke `ofetch` pada Scraper**
   - **Konteks:** Menghindari aplikasi macet (*hang*) ketika server website berita lemot/terlambat merespon. 
   - **Tindakan:** Mengganti HTTP client bawaan (`fetch`) dengan `ofetch` di `src/services/scraper.ts`, lalu menyertakan konfigurasi `retry: 3` (agar gagal diulang otomatis tanpa henti), `retryDelay: 1000` (jeda antar retry), dan `timeout: 10000` (waktu respon maksimal 10 detik).
 
-- [x] **Menambahkan Konfigurasi JSON Object Mode pada API DeepSeek**
+- [x] **Menambahkan Konfigurasi JSON Object Mode pada API AI**
   - **Konteks:** Model terkadang menyelipkan format penjelasan sebelum/setelah JSON walaupun sudah diprompting.
-  - **Tindakan:** Mengatur `response_format: { type: "json_object" }` pada service `generateNaskah` di dalam file `src/services/ai.ts`. Hal ini secara paksa mewajibkan DeepSeek untuk me-return syntax JSON Object yang murni valid guna mengurangi error saat parsing naskah.
+  - **Tindakan:** Mengatur `response_format: { type: "json_object" }` pada service `generateNaskah` di dalam file `src/services/ai.ts`. Hal ini secara paksa mewajibkan AI untuk me-return syntax JSON Object yang murni valid guna mengurangi error saat parsing naskah.
 
 - [x] **Menambahkan Properti `tabStops` pada Pembuatan Paragraf Docx**
   - **Konteks:** Spasi antar tab untuk identasi informasi program seperti "Judul Naskah", "Gaya Penyiar", dll sering kali kurang sejajar/absolut karena bergantung pada manual multispaces (single atau double tab `\t\t`).
@@ -65,3 +65,14 @@
       - `.docx-preview-container`: Background putih, max-height 500px dengan overflow scroll, padding, dan styling untuk elemen `<p>` & `<table>` yang di-render oleh docx-preview
     - Build verification: TypeScript dan Vite build berhasil tanpa error (0 errors, bundle size: 374.03 kB gzipped 111.97 kB).
   - **Hasil Akhir:** User sekarang dapat melihat preview dokumen langsung di panel preview dengan kemampuan scroll, sebelum melakukan download file.
+
+**Tanggal:** 29 Juni 2026
+
+- [x] **Migrasi ke OpenAI-Compatible API (Hapus dependensi DeepSeek)**
+  - **Konteks:** Agar aplikasi bisa berjalan dengan berbagai provider (OpenAI, Ollama, LM Studio, vLLM, LiteLLM, dll).
+  - **Tindakan:** 
+    - Mengganti `baseURL` dari hardcoded `https://api.deepseek.com` menjadi configurable via `OPENAI_BASE_URL`
+    - Mengganti model dari hardcoded `deepseek-v4-flash` menjadi configurable via `OPENAI_MODEL`
+    - Menambahkan dukungan penuh untuk LLM lokal (Ollama, LM Studio, dll)
+    - Menghapus semua referensi DeepSeek dari dokumentasi, log, dan kode
+    - API key utama sekarang `OPENAI_API_KEY` (fallback `DEEPSEEK_API_KEY` tetap ada untuk backward compatibility)
