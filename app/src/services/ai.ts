@@ -1,15 +1,15 @@
 import OpenAI from "openai"
 import type { NaskahJSON, ProgramConfig } from "../types"
 
-const apiKey = process.env.OPENAI_API_KEY ?? process.env.DEEPSEEK_API_KEY
+const apiKey = process.env.DEEPSEEK_API_KEY ?? process.env.OPENAI_API_KEY
 if (!apiKey) {
   throw new Error(
-    "Missing OpenAI API key. Set OPENAI_API_KEY in your environment."
+    "Missing API key. Set DEEPSEEK_API_KEY or OPENAI_API_KEY in your environment."
   )
 }
 
-const baseURL = process.env.OPENAI_BASE_URL ?? "https://api.openai.com/v1"
-const model   = process.env.OPENAI_MODEL   ?? "gpt-4o"
+const baseURL = process.env.OPENAI_BASE_URL ?? "https://api.deepseek.com"
+const model   = process.env.OPENAI_MODEL   ?? "deepseek-v4-flash"
 
 const client = new OpenAI({ apiKey, baseURL })
 
