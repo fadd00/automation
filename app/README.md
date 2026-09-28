@@ -107,17 +107,17 @@ Buka browser dan akses **`http://localhost:5173`**. Tombol Generate Naskah dan S
 Buat file `.env` di root folder backend:
 
 ```env
-OPENAI_API_KEY=your_api_key_here
-OPENAI_BASE_URL=https://api.openai.com/v1
-OPENAI_MODEL=gpt-4o
+OPENROUTER_API_KEY=your_openrouter_key_here
+OPENAI_BASE_URL=https://openrouter.ai/api/v1
+OPENAI_MODEL=openrouter/free
 PORT=3000
 ```
 
 | Variable | Wajib | Keterangan |
 |---|---|---|
-| `OPENAI_API_KEY` | ✅ | API key dari provider OpenAI-compatible |
-| `OPENAI_BASE_URL` | ❌ | Base URL endpoint (default `https://api.openai.com/v1`) |
-| `OPENAI_MODEL` | ❌ | Nama model (default `gpt-4o`) |
+| `OPENROUTER_API_KEY` | ✅ | API key dari OpenRouter |
+| `OPENAI_BASE_URL` | ❌ | Base URL endpoint (default `https://openrouter.ai/api/v1`) |
+| `OPENAI_MODEL` | ❌ | Nama model (default `openrouter/free`, router model gratis) |
 | `PORT` | ❌ | Default `3000` |
 
 ---
