@@ -65,7 +65,7 @@ bun install
 
 # 3. Setup environment variable
 cp .env.example .env
-# lalu isi OPENAI_API_KEY di file .env
+# lalu isi API key provider yang dipilih di file .env
 
 # 4. Jalankan dev server
 bun --watch src/index.ts
@@ -116,9 +116,13 @@ PORT=3000
 | Variable | Wajib | Keterangan |
 |---|---|---|
 | `OPENROUTER_API_KEY` | ✅ | API key dari OpenRouter |
-| `OPENAI_BASE_URL` | ❌ | Base URL endpoint (default `https://openrouter.ai/api/v1`) |
-| `OPENAI_MODEL` | ❌ | Nama model (default `openrouter/free`, router model gratis) |
+| `DEEPSEEK_API_KEY` | ✅* | API key dari DeepSeek; otomatis memakai endpoint `https://api.deepseek.com` dan model `deepseek-chat` jika konfigurasi OpenAI tidak diisi |
+| `OPENAI_API_KEY` | ✅* | API key provider OpenAI-compatible lain |
+| `OPENAI_BASE_URL` | ❌ | Base URL endpoint (default OpenRouter, atau DeepSeek jika hanya `DEEPSEEK_API_KEY` yang diisi) |
+| `OPENAI_MODEL` | ❌ | Nama model (default `openrouter/free`, atau `deepseek-chat` jika hanya `DEEPSEEK_API_KEY` yang diisi) |
 | `PORT` | ❌ | Default `3000` |
+
+Pilih salah satu API key. Untuk DeepSeek, isi `DEEPSEEK_API_KEY` saja; `OPENAI_BASE_URL` dan `OPENAI_MODEL` opsional karena endpoint dan model DeepSeek sudah dipilih otomatis. Jika memilih `OPENAI_API_KEY` untuk provider lain, atur URL dan nama model sesuai provider tersebut.
 
 ---
 

@@ -44,7 +44,7 @@ jbr-generator/
 
 ### Prasyarat
 - [Bun](https://bun.sh) v1.0+
-- Endpoint API OpenAI-compatible (OpenAI, Ollama, LM Studio, Groq, dll — lihat [app/README.md](app/README.md#menjalankan-dengan-llm-lokal) untuk panduan LLM lokal)
+- Endpoint API OpenAI-compatible (DeepSeek, OpenRouter, OpenAI, Ollama, LM Studio, Groq, dll — lihat [app/README.md](app/README.md#environment-variables))
 
 ### Langkah-langkah Menjalankan (Satu Port)
 
@@ -55,7 +55,7 @@ Kini Anda tidak perlu menjalankan dua terminal secara terpisah, karena backend o
 git clone <repo-url> jbr-generator
 cd jbr-generator/app
 cp .env.example .env
-# Buka file .env dan isikan OPENAI_API_KEY, OPENAI_BASE_URL, dan OPENAI_MODEL
+# Buka file .env dan isi API key provider; lihat app/README.md untuk konfigurasi DeepSeek/OpenRouter
 ```
 
 **2. Pasang Dependency & Build Frontend**

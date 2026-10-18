@@ -1,18 +1,23 @@
 import OpenAI from "openai"
 import type { NaskahJSON, ProgramConfig } from "../types"
 
-const apiKey =
-  process.env.OPENROUTER_API_KEY ??
-  process.env.OPENAI_API_KEY ??
-  process.env.DEEPSEEK_API_KEY
+const openRouterApiKey = process.env.OPENROUTER_API_KEY?.trim()
+const openAiApiKey = process.env.OPENAI_API_KEY?.trim()
+const deepseekApiKey = process.env.DEEPSEEK_API_KEY?.trim()
+const apiKey = openRouterApiKey || openAiApiKey || deepseekApiKey
 if (!apiKey) {
   throw new Error(
     "Missing API key. Set OPENROUTER_API_KEY, OPENAI_API_KEY, or DEEPSEEK_API_KEY in your environment."
   )
 }
 
-const baseURL = process.env.OPENAI_BASE_URL ?? "https://openrouter.ai/api/v1"
-const model   = process.env.OPENAI_MODEL   ?? "openrouter/free"
+const usingDeepSeek = Boolean(deepseekApiKey && !openRouterApiKey && !openAiApiKey)
+const baseURL =
+  process.env.OPENAI_BASE_URL ??
+  (usingDeepSeek ? "https://api.deepseek.com" : "https://openrouter.ai/api/v1")
+const model =
+  process.env.OPENAI_MODEL ??
+  (usingDeepSeek ? "deepseek-chat" : "openrouter/free")
 
 const client = new OpenAI({ apiKey, baseURL })
 
